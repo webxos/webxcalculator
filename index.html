@@ -16,30 +16,32 @@
             background: #0a0a0a;
             color: #00ff00;
             line-height: 1.6;
-            padding: 20px;
+            padding: 10px;
+            -webkit-tap-highlight-color: transparent; /* Removes tap highlight on mobile */
         }
 
         .calculator-container {
-            max-width: 800px;
+            max-width: 500px;
             margin: 0 auto;
             background: #1a1a1a;
             border: 2px solid #00ff00;
             border-radius: 10px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
         }
 
         h1 {
             text-align: center;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-shadow: 0 0 10px #00ff00;
+            font-size: 1.5em;
         }
 
         .input-group {
-            margin: 20px 0;
+            margin: 15px 0;
             background: #111;
-            padding: 15px;
+            padding: 10px;
             border-radius: 5px;
             border: 1px solid #00ff00;
         }
@@ -48,17 +50,18 @@
             background: #0a0a0a;
             border: 1px solid #00ff00;
             color: #00ff00;
-            padding: 8px;
+            padding: 10px;
             margin: 5px 0;
             border-radius: 3px;
             font-family: 'Courier New', monospace;
             width: 100%;
+            font-size: 1.2em;
         }
 
         .button-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
             margin: 15px 0;
         }
 
@@ -66,14 +69,16 @@
             background: #0a0a0a;
             border: 1px solid #00ff00;
             color: #00ff00;
-            padding: 15px;
+            padding: 20px;
             border-radius: 5px;
             font-family: 'Courier New', monospace;
+            font-size: 1.5em;
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 4px 0 #006600;
             position: relative;
             top: 0;
+            touch-action: manipulation; /* Improves mobile touch response */
         }
 
         button:hover {
@@ -88,19 +93,30 @@
         }
 
         #result {
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 15px;
+            padding: 10px;
             background: #111;
             border: 1px dashed #00ff00;
             border-radius: 5px;
             word-wrap: break-word;
+            font-size: 1.2em;
         }
 
         footer {
             text-align: center;
-            margin-top: 30px;
-            font-size: 0.9em;
+            margin-top: 20px;
+            font-size: 0.8em;
             opacity: 0.8;
+        }
+
+        @media (max-width: 500px) {
+            .calculator-container {
+                padding: 15px;
+            }
+            button {
+                padding: 15px;
+                font-size: 1.3em;
+            }
         }
     </style>
 </head>
@@ -116,25 +132,23 @@
                 <button onclick="appendToExpression('8')">8</button>
                 <button onclick="appendToExpression('9')">9</button>
                 <button onclick="appendToExpression('/')">/</button>
-                <button onclick="appendToExpression('√')">√</button>
                 
                 <button onclick="appendToExpression('4')">4</button>
                 <button onclick="appendToExpression('5')">5</button>
                 <button onclick="appendToExpression('6')">6</button>
                 <button onclick="appendToExpression('*')">×</button>
-                <button onclick="appendToExpression('^')">^</button>
                 
                 <button onclick="appendToExpression('1')">1</button>
                 <button onclick="appendToExpression('2')">2</button>
                 <button onclick="appendToExpression('3')">3</button>
                 <button onclick="appendToExpression('-')">-</button>
-                <button onclick="appendToExpression('%')">%</button>
                 
                 <button onclick="appendToExpression('0')">0</button>
                 <button onclick="appendToExpression('.')">.</button>
                 <button onclick="clearExpression()">C</button>
                 <button onclick="appendToExpression('+')">+</button>
-                <button onclick="runCalculation()">=</button>
+                
+                <button onclick="runCalculation()" style="grid-column: span 4">=</button>
             </div>
             
             <div id="result"></div>
@@ -158,21 +172,10 @@
             try {
                 // Replace symbols with JavaScript equivalents
                 expr = expr.replace(/×/g, '*')
-                          .replace(/÷/g, '/')
-                          .replace(/\^/g, '**');
-
-                // Handle square root
-                if (expr.includes('√')) {
-                    const parts = expr.split('√');
-                    if (parts.length === 2) {
-                        const num = parseFloat(parts[1]);
-                        if (num < 0) throw new Error("Cannot calculate square root of negative");
-                        return Math.sqrt(num);
-                    }
-                }
+                          .replace(/÷/g, '/');
 
                 // Basic validation
-                if (/[^0-9+\-*/^.()%\s]/.test(expr)) {
+                if (/[^0-9+\-*/.\s]/.test(expr)) {
                     throw new Error("Invalid characters");
                 }
 
@@ -197,6 +200,13 @@
             const result = evaluateExpression(expression);
             document.getElementById('result').innerText = `> ${result}`;
         }
+
+        // Add Enter key support
+        document.getElementById('expression').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                runCalculation();
+            }
+        });
     </script>
 </body>
 </html>
