@@ -36,7 +36,7 @@
             text-shadow: 0 0 10px #00ff00;
         }
 
-        .input-group, .question-group {
+        .input-group {
             margin: 20px 0;
             background: #111;
             padding: 15px;
@@ -44,7 +44,7 @@
             border: 1px solid #00ff00;
         }
 
-        select, input, button, textarea {
+        select, input {
             background: #0a0a0a;
             border: 1px solid #00ff00;
             color: #00ff00;
@@ -54,9 +54,25 @@
             font-family: 'Courier New', monospace;
         }
 
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
         button {
+            background: #0a0a0a;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            box-shadow: 0 4px 0 #006600;
+            position: relative;
+            top: 0;
         }
 
         button:hover {
@@ -65,7 +81,12 @@
             box-shadow: 0 0 10px #00ff00;
         }
 
-        #result, #answer {
+        button:active {
+            box-shadow: 0 2px 0 #006600;
+            top: 2px;
+        }
+
+        #result {
             margin-top: 20px;
             padding: 15px;
             background: #111;
@@ -98,20 +119,46 @@
             </select>
             <input type="number" id="num1" placeholder="First number" step="any">
             <input type="number" id="num2" placeholder="Second number" step="any">
-            <button onclick="runCalculation()">Execute</button>
+            
+            <div class="button-grid">
+                <button onclick="appendNumber('1')">1</button>
+                <button onclick="appendNumber('2')">2</button>
+                <button onclick="appendNumber('3')">3</button>
+                <button onclick="appendNumber('4')">4</button>
+                <button onclick="appendNumber('5')">5</button>
+                <button onclick="appendNumber('6')">6</button>
+                <button onclick="appendNumber('7')">7</button>
+                <button onclick="appendNumber('8')">8</button>
+                <button onclick="appendNumber('9')">9</button>
+                <button onclick="appendNumber('0')">0</button>
+                <button onclick="appendNumber('.')">.</button>
+                <button onclick="clearInputs()">C</button>
+                <button onclick="runCalculation()">EXE</button>
+            </div>
+            
             <div id="result"></div>
-        </div>
-
-        <div class="question-group">
-            <textarea id="question" rows="3" placeholder="Ask a math-related question..."></textarea>
-            <button onclick="askQuestion()">Submit Query</button>
-            <div id="answer"></div>
         </div>
 
         <footer>© WebX 2025 - All Rights Reserved</footer>
     </div>
 
     <script>
+        let activeInput = 'num1';
+
+        function appendNumber(value) {
+            const input = document.getElementById(activeInput);
+            input.value += value;
+        }
+
+        function clearInputs() {
+            document.getElementById('num1').value = '';
+            document.getElementById('num2').value = '';
+            document.getElementById('result').innerText = '';
+        }
+
+        document.getElementById('num1').addEventListener('focus', () => activeInput = 'num1');
+        document.getElementById('num2').addEventListener('focus', () => activeInput = 'num2');
+
         async function runCalculation() {
             const operation = document.getElementById('operation').value;
             const num1 = document.getElementById('num1').value;
@@ -154,25 +201,6 @@
             }
 
             document.getElementById('result').innerText = `> ${result}`;
-        }
-
-        async function askQuestion() {
-            const question = document.getElementById('question').value;
-            let answer = "Processing...";
-
-            document.getElementById('answer').innerText = answer;
-
-            // Simulated AI response (in real implementation, this would call an API)
-            setTimeout(() => {
-                if (!question.trim()) {
-                    answer = "> Error: Please enter a question";
-                } else if (question.toLowerCase().includes("math")) {
-                    answer = "> I can help with mathematical calculations! Try using the calculator above or ask a specific math question.";
-                } else {
-                    answer = "> I'm optimized for math-related queries. Please ask something mathematical!";
-                }
-                document.getElementById('answer').innerText = answer;
-            }, 1000);
         }
     </script>
 </body>
